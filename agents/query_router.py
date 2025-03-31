@@ -36,8 +36,8 @@ class QueryRouter:
         workflow = StateGraph(AgentState)
 
         # Add nodes
-        workflow.add_node("neptune", self.neptune_tool.query_neptune)
-        workflow.add_node("docdb", self.docdb_tool.query_docdb)
+        workflow.add_node("neptune", self.neptune_tool.process_query)
+        workflow.add_node("docdb", self.docdb_tool.process_query)
         workflow.add_node("process", self._process_results)
 
         # Add edges
