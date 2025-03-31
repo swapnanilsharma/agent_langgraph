@@ -1,11 +1,11 @@
-from langchain_community.llms import Bedrock
+from langchain_aws import ChatBedrockConverse
 from langchain_core.prompts import ChatPromptTemplate
 from config import settings
 from schemas import EXAMPLE_NEPTUNE_SCHEMA, EXAMPLE_DOCDB_SCHEMA
 
 def get_llm():
     """Initialize AWS Bedrock LLM with Claude 3.5 Sonnet."""
-    return Bedrock(
+    return ChatBedrockConverse(
         model_id=settings.MODEL_ID,
         region_name=settings.AWS_REGION,
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,

@@ -1,27 +1,24 @@
 import boto3
 from typing import Dict, List, Any
+from langchain_aws.graphs import NeptuneAnalyticsGraph
 from config import settings
 from schemas import NeptuneNode, NeptuneRelationship, Document, EXAMPLE_NEPTUNE_SCHEMA, EXAMPLE_DOCDB_SCHEMA
 
 class NeptuneClient:
     def __init__(self):
-        self.client = boto3.client(
-            'neptune-data',
+        self.graph = NeptuneAnalyticsGraph(
             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-            region_name=settings.AWS_REGION
+            region_name=settings.AWS_REGION,
+            endpoint=settings.NEPTUNE_ENDPOINT
         )
-        self.endpoint = settings.NEPTUNE_ENDPOINT
         self.schema = EXAMPLE_NEPTUNE_SCHEMA
 
     async def execute_query(self, query: str) -> List[Dict[str, Any]]:
         """Execute a Cypher query on Neptune database."""
         try:
-            response = self.client.execute_query(
-                endpoint=self.endpoint,
-                query=query
-            )
-            return response.get('results', [])
+            results = await self.graph.query(query)
+            return results
         except Exception as e:
             print(f"Error executing Neptune query: {str(e)}")
             return []
